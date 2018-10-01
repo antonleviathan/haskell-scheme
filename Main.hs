@@ -1,6 +1,13 @@
 import Text.ParserCombinators.Parsec hiding (spaces)
 import System.Environment
 
+data LispVal = Atom String
+             | List [LispVal] 
+             | DottedList [LispVal] 
+             | Number Integer
+             | String String 
+             | Bool Bool
+
 symbol :: Parser Char
 symbol = oneOf "!#$%&|*+-/:<=>?@^_~"
 
