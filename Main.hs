@@ -25,7 +25,7 @@ parseString = do
 parseAtom :: Parser LispVal
 parseAtom = do
   first <- letter <|> symbol
-  rest <- many (letter <|> digit <|> symbol)  
+  rest  <- many (letter <|> digit <|> symbol)  
   let atom = first:rest
   return $ case atom of
     "#t" -> Bool True
@@ -33,17 +33,17 @@ parseAtom = do
     _    -> Atom atom
 
 parseNumber :: Parser LispVal
-parseNumber = liftM (Number . read) $ many1 digit
+parseNumber = liftM (Number . read) (many1 digit)
 
 parseExpr :: Parser LispVal
 parseExpr = parseAtom
-    <|> parseString
-    <|> parseNumber
+        <|> parseString
+        <|> parseNumber
 
 readExpr :: String -> String
 readExpr input = 
   case parse parseExpr "lisp" input of
-    Left err  -> "No match: " ++ show err
+    Left  err -> "No match: " ++ show err
     Right val -> "Found value"                    
 
 main :: IO ()
