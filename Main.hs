@@ -3,10 +3,10 @@ import System.Environment
 import Control.Monad
 
 data LispVal = Atom String
-             | List [LispVal] 
-             | DottedList [LispVal] 
+             | List [LispVal]
+             | DottedList [LispVal]
              | Number Integer
-             | String String 
+             | String String
              | Bool Bool
 
 spaces :: Parser ()
@@ -25,7 +25,7 @@ parseString = do
 parseAtom :: Parser LispVal
 parseAtom = do
   first <- letter <|> symbol
-  rest  <- many (letter <|> digit <|> symbol)  
+  rest  <- many (letter <|> digit <|> symbol)
   let atom = first:rest
   return $ case atom of
     "#t" -> Bool True
@@ -33,7 +33,19 @@ parseAtom = do
     _    -> Atom atom
 
 parseNumber :: Parser LispVal
-parseNumber = liftM (Number . read) (many1 digit)
+parseNumber = (Number . read) <$> (many1 digit)
+
+-- parseNumber :: Parser LispVal
+-- parseNumber = liftM (Number . read) (many1 digit)
+
+-- parseNumber :: Parser LispVal
+-- parseNumber = do
+--   digits <-  many1 digit
+--   let readDigits = (Number . read) digits
+--   return readDigits
+
+-- parseNumber :: Parser LispVal
+-- parseNumber = (many1 digit) >>= (\x -> return $ (Number . read) x)
 
 parseExpr :: Parser LispVal
 parseExpr = parseAtom
@@ -41,10 +53,10 @@ parseExpr = parseAtom
         <|> parseNumber
 
 readExpr :: String -> String
-readExpr input = 
+readExpr input =
   case parse parseExpr "lisp" input of
     Left  err -> "No match: " ++ show err
-    Right val -> "Found value"                    
+    Right val -> "Found value"
 
 main :: IO ()
 main = do
